@@ -7,8 +7,10 @@ var cur_line = 0
 var cur_column = 0
 var cur_path = "~"
 var cur_min_column = 0
+var cur_max_row = 0
 var commands = []
 var command_index = 0
+var randy = RandomNumberGenerator.new()
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -26,21 +28,26 @@ func _ready():
 
 
 func init():
-	#print_file("res://TextFiles/BootText.tres")
-	print_file("res://TextFiles/TempLoadText.tres")
+	print_file("BootMessages")
+	#print_file("TempLoadText")
 	pass
 
 func print_file(path):
+	self.select(cur_line + 1, 0, self.get_line_count(), 10000000000000000)
+	self.cut()
 	var file = File.new()
-	file.open(path, File.READ)
+	file.open("res://TextFiles/" + path + ".res", File.READ)
 	
 	while !file.eof_reached():
-		
-		yield(get_tree().create_timer(0.05),"timeout")
+		var hang = randy.randf_range(0, 100)
+		var wait_time = 0.05
+		if hang < 20:
+			wait_time = 0.2
+		yield(get_tree().create_timer(wait_time),"timeout")
 		
 		var line = file.get_line()
 		self.text = self.text + "\n" + line
-		cur_line += 1
+		cur_line += 2
 		self.cursor_set_line(cur_line)
 	
 	file.close()
@@ -49,13 +56,27 @@ func print_file(path):
 	add_user_path()
 
 func add_user_path():
+	self.select(self.cursor_get_line(), 0, self.get_line_count(),10000000000)
+	self.cut()
 	self.insert_text_at_cursor("json@codechomper $ " + cur_path + ": ")
+	var og_text = self.text
 	cur_min_column = cursor_get_column()
+	cur_max_row = cursor_get_line()
+	self.insert_text_at_cursor("\n\n")
+	self.cursor_set_line(cur_max_row,false)
+	self.cursor_set_column(cur_min_column)
+	cur_column = cur_min_column
+	self.cursor_set_column(cur_column)
+	
+	
 	
 
 # Handle keyboard input my way instead of TextEdit's way
 # warning-ignore:unused_argument
 func _process(delta):
+	# Don't buble up event
+	get_tree().set_input_as_handled()
+	
 	# Don't let the user nav cursor with left arrow. keeps them in cur_column
 	if Input.is_action_just_pressed("ui_left"):
 		print("left")
@@ -65,10 +86,13 @@ func _process(delta):
 	if Input.is_action_just_pressed("ui_up"):
 		self.cursor_set_line(self.cursor_get_line() + 2)
 		if commands.size() > 0:
-			self.select(self.cursor_get_line(), 0, self.cursor_get_line(), self.cursor_get_column())
+			self.select(self.cursor_get_line()-1, cur_min_column, self.get_line_count(),10000000000)
 			self.cut()
+			print("line count" + str(get_line_count()))
+			
 			add_user_path()
 			self.insert_text_at_cursor(commands[command_index])
+			cur_column = self.cursor_get_column()
 			command_index = (command_index + 1) % commands.size()
 	
 	# Submit commands, puts them in the command history and resets the history index to 0
@@ -89,12 +113,10 @@ func _process(delta):
 		if self.cursor_get_column() < cur_min_column:
 			self.insert_text_at_cursor(" ")
 	
-	# Don't buble up event
-	get_tree().set_input_as_handled()
 	
 	cur_line = self.cursor_get_line()
 	cur_column = self.cursor_get_column()
-	self.cursor_set_line(cur_line)
+	#self.cursor_set_line(cur_line)
 
 func _input(event):
 	if Input.is_mouse_button_pressed(BUTTON_LEFT) or Input.is_mouse_button_pressed(BUTTON_RIGHT):
@@ -108,21 +130,27 @@ func run_command(command):
 	command = command.to_lower()
 	match command:
 		'?':
-			print_file("res://TextFiles/Help.tres")
+			print_file("Help")
 		
 		'h':
-			print_file("res://TextFiles/Help.tres")
+			print_file("Help")
 		
 		"help":
-			print_file("res://TextFiles/Help.tres")
+			print_file("Help")
 		
 		"clear":
-			self.text = ""
+			self.text = "\n\n"
+			self.cursor_set_line(self.get_line_count(),false)
 			add_user_path()
 		
 		"cls":
-			self.text = ""
+			self.text = "\n\n"
+			self.cursor_set_line(self.get_line_count(),false)
 			add_user_path()
+		
+		"ls":
+			print_file(cur_path)
+			
 		
 		"exit":
 			get_tree().quit()
