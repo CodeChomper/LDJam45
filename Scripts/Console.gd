@@ -7,6 +7,7 @@ var print_line = false
 var cur_line = 0
 var cur_column = 0
 var cur_path = "~"
+var cur_min_column = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -21,7 +22,7 @@ func _ready():
 
 
 func init():
-	print_file("res://TextFiles/tempLoadText.tres")
+	print_file("res://TextFiles/TempLoadText.tres")
 	#print_file("res://TextFiles/LoadingScreen.tres")
 	pass
 
@@ -45,18 +46,31 @@ func print_file(path):
 
 func add_user_path():
 	self.insert_text_at_cursor("user@codechomper $ " + cur_path + ": ")
+	cur_min_column = cursor_get_column()
+	print(str(cur_min_column))
 
 
 
 
 func _on_TextEdit_text_changed():
-	if self.cursor_get_column() == 0:
-		print("last line: " + self.get_line(self.cursor_get_line() - 1))
-		add_user_path()
-	pass # Replace with function body.
+#	if self.cursor_get_column() == 0:
+#		print("last line: " + self.get_line(self.cursor_get_line() - 1))
+#		add_user_path()
+	pass
 
 func _process(delta):
 	cur_column = self.cursor_get_column()
 	if Input.is_action_just_pressed("ui_left"):
 		print("left")
 		self.cursor_set_column(cur_column + 1)
+	
+	if Input.is_action_just_pressed("ui_up"):
+		self.cursor_set_line(self.cursor_get_line() + 2)
+		
+	if Input.is_action_just_pressed("ui_accept"):
+		print("last line: " + self.get_line(self.cursor_get_line() - 1))
+		add_user_path()
+	
+	if Input.is_action_pressed("Delete"):
+		if self.cursor_get_column() < cur_min_column + 1:
+			self.insert_text_at_cursor(" ")
