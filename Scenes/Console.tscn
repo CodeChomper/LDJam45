@@ -31,4 +31,3 @@ caret_block_mode = true
 caret_blink = true
 caret_moving_by_right_click = false
 script = ExtResource( 1 )
-[connection signal="text_changed" from="TextEdit" to="TextEdit" method="_on_TextEdit_text_changed"]
