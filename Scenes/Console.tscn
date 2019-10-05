@@ -1,31 +1,31 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://Scripts/Console.gd" type="Script" id=1]
-
-[sub_resource type="StyleBoxEmpty" id=1]
 
 [sub_resource type="StyleBoxEmpty" id=2]
 
 [sub_resource type="StyleBoxEmpty" id=3]
 
-[sub_resource type="StyleBoxEmpty" id=4]
-
-[node name="Root" type="Node2D"]
+[node name="Root" type="MarginContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_constants/margin_right = 10
+custom_constants/margin_top = 10
+custom_constants/margin_left = 10
+custom_constants/margin_bottom = 25
 
 [node name="TextEdit" type="TextEdit" parent="."]
-margin_left = 12.0
-margin_top = 12.0
-margin_right = 1012.0
-margin_bottom = 588.0
-custom_styles/read_only = SubResource( 1 )
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 1014.0
+margin_bottom = 585.0
+mouse_filter = 1
 custom_styles/focus = SubResource( 2 )
 custom_styles/normal = SubResource( 3 )
-custom_styles/completion = SubResource( 4 )
-custom_constants/line_spacing = 20
-custom_constants/completion_lines = 3
-context_menu_enabled = false
-smooth_scrolling = true
-v_scroll_speed = 100.0
+custom_constants/line_spacing = 7
+highlight_current_line = true
+syntax_highlighting = true
+hiding_enabled = 1
 wrap_enabled = true
 caret_block_mode = true
 caret_blink = true

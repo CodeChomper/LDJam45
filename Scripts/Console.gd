@@ -12,10 +12,16 @@ var command_index = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	
 	self.grab_focus()
+	self.clear_colors()
+	self.add_color_override("font_color",Color.limegreen)
+	self.add_keyword_color("ls", Color.aqua)
+	self.add_keyword_color("clear", Color.aqua)
+	self.add_keyword_color("cd", Color.aqua)
+	self.add_keyword_color("exit", Color.red)
 	cur_line = self.cursor_get_line()
 	init()
+	
 	pass # Replace with function body.
 
 
@@ -45,7 +51,7 @@ func print_file(path):
 func add_user_path():
 	self.insert_text_at_cursor("json@codechomper $ " + cur_path + ": ")
 	cur_min_column = cursor_get_column()
-	print(str(cur_min_column))
+	
 
 # Handle keyboard input my way instead of TextEdit's way
 # warning-ignore:unused_argument
@@ -88,6 +94,7 @@ func _process(delta):
 	
 	cur_line = self.cursor_get_line()
 	cur_column = self.cursor_get_column()
+	self.cursor_set_line(cur_line)
 
 func _input(event):
 	if Input.is_mouse_button_pressed(BUTTON_LEFT) or Input.is_mouse_button_pressed(BUTTON_RIGHT):
@@ -102,16 +109,23 @@ func run_command(command):
 	match command:
 		'?':
 			print_file("res://TextFiles/Help.tres")
+		
 		'h':
 			print_file("res://TextFiles/Help.tres")
+		
 		"help":
 			print_file("res://TextFiles/Help.tres")
+		
 		"clear":
 			self.text = ""
 			add_user_path()
+		
 		"cls":
 			self.text = ""
 			add_user_path()
+		
+		"exit":
+			get_tree().quit()
 		_:
 			insert_text_at_cursor("Unknown Command: [ " + command + " ] enter ? for help\n")
 			add_user_path()
