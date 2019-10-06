@@ -20,6 +20,7 @@ func _ready():
 	self.add_keyword_color("ls", Color.aqua)
 	self.add_keyword_color("clear", Color.aqua)
 	self.add_keyword_color("cd", Color.aqua)
+	self.add_keyword_color("cat", Color.aqua)
 	self.add_keyword_color("exit", Color.red)
 	cur_line = self.cursor_get_line()
 	init()
@@ -36,8 +37,8 @@ func print_file(path):
 	self.select(cur_line + 1, 0, self.get_line_count(), 10000000000000000)
 	self.cut()
 	var file = File.new()
-	if !file.file_exists("res://TextFiles/" + path):
-		self.text = self.text + "File missing!\n\n"
+	if !file.file_exists("res://TextFiles/"+ path):
+		self.text = self.text + path + ": File missing!\n\n"
 		cur_line += 2
 		self.cursor_set_line(cur_line)
 		add_user_path()
@@ -65,7 +66,6 @@ func add_user_path():
 	self.select(self.cursor_get_line(), 0, self.get_line_count(),10000000000)
 	self.cut()
 	self.insert_text_at_cursor("json@codechomper:" + cur_path + " $ ")
-	var og_text = self.text
 	cur_min_column = cursor_get_column()
 	cur_max_row = cursor_get_line()
 	self.insert_text_at_cursor("\n")
@@ -90,6 +90,10 @@ func _process(delta):
 	
 	# Handles like a .bash_history recalling commands on up arrow pressed
 	if Input.is_action_just_pressed("ui_up"):
+		if commands.size() <= 0:
+			self.cursor_set_line(self.cursor_get_line() + 1)
+			self.cursor_set_column(cur_min_column)
+			return
 		self.cursor_set_line(self.cursor_get_line() + 2)
 		if commands.size() > 0:
 			self.select(self.cursor_get_line()-1, cur_min_column, self.get_line_count(),10000000000)
@@ -128,6 +132,7 @@ func _process(delta):
 	cur_column = self.cursor_get_column()
 	#self.cursor_set_line(cur_line)
 
+# warning-ignore:unused_argument
 func _input(event):
 	if Input.is_mouse_button_pressed(BUTTON_LEFT) or Input.is_mouse_button_pressed(BUTTON_RIGHT):
 		get_tree().set_input_as_handled()
@@ -138,6 +143,8 @@ func _input(event):
 
 func run_command(command):
 	command = command.to_lower()
+	var command_parts = command.split(' ')
+	command = command_parts[0]
 	match command:
 		'?':
 			print_file("home/help.res")
@@ -147,6 +154,35 @@ func run_command(command):
 		
 		"help":
 			print_file("home/help.res")
+		
+		"cd":
+			if command_parts[1] == "..":
+				var last_slash = cur_path.find_last("/")
+				if last_slash != -1:
+					cur_path = cur_path.left(cur_path.find_last("/"))
+				else:
+					self.insert_text_at_cursor("Already at home, can't navigate back\n")
+				add_user_path()
+				return
+			print(command_parts[0])
+			var file = File.new()
+			if file.file_exists("res://TextFiles/"+ cur_path + "/" + command_parts[1] + "/ls.res"):
+				cur_path += "/" + command_parts[1]
+			else:
+				self.insert_text_at_cursor("Folder doesn't exist!\n")
+			add_user_path()
+			file.close()
+			
+		
+		"cat":
+			var file_name = command_parts[1]
+			file_name = file_name.left(file_name.find_last(".")) + ".res"
+			var file = File.new()
+			if file.file_exists("res://TextFiles/" + cur_path + "/" + file_name):
+				print_file(cur_path + "/" + file_name)
+			else:
+				self.insert_text_at_cursor("file does not exist!\n")
+				add_user_path()
 		
 		"clear":
 			self.text = "\n\n"
