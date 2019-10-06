@@ -5,7 +5,7 @@ extends TextEdit
 # var b = "text"
 var cur_line = 0
 var cur_column = 0
-var cur_path = "~"
+var cur_path = "home"
 var cur_min_column = 0
 var cur_max_row = 0
 var commands = []
@@ -28,15 +28,21 @@ func _ready():
 
 
 func init():
-	print_file("BootMessages")
-	#print_file("TempLoadText")
+	#print_file("BootMessages")
+	print_file("home/TempLoadText.res")
 	pass
 
 func print_file(path):
 	self.select(cur_line + 1, 0, self.get_line_count(), 10000000000000000)
 	self.cut()
 	var file = File.new()
-	file.open("res://TextFiles/" + path + ".res", File.READ)
+	if !file.file_exists("res://TextFiles/" + path):
+		self.text = self.text + "File missing!\n\n"
+		cur_line += 2
+		self.cursor_set_line(cur_line)
+		add_user_path()
+		return
+	file.open("res://TextFiles/" + path, File.READ)
 	
 	while !file.eof_reached():
 		var hang = randy.randf_range(0, 100)
@@ -47,7 +53,7 @@ func print_file(path):
 		
 		var line = file.get_line()
 		self.text = self.text + "\n" + line
-		cur_line += 2
+		cur_line += 3
 		self.cursor_set_line(cur_line)
 	
 	file.close()
@@ -58,11 +64,11 @@ func print_file(path):
 func add_user_path():
 	self.select(self.cursor_get_line(), 0, self.get_line_count(),10000000000)
 	self.cut()
-	self.insert_text_at_cursor("json@codechomper $ " + cur_path + ": ")
+	self.insert_text_at_cursor("json@codechomper:" + cur_path + " $ ")
 	var og_text = self.text
 	cur_min_column = cursor_get_column()
 	cur_max_row = cursor_get_line()
-	self.insert_text_at_cursor("\n\n")
+	self.insert_text_at_cursor("\n")
 	self.cursor_set_line(cur_max_row,false)
 	self.cursor_set_column(cur_min_column)
 	cur_column = cur_min_column
@@ -95,11 +101,15 @@ func _process(delta):
 			cur_column = self.cursor_get_column()
 			command_index = (command_index + 1) % commands.size()
 	
+	if Input.is_action_just_released("ui_down"):
+		self.cursor_set_line(self.cursor_get_line() - 1)
+		self.cursor_set_column(cur_min_column)
+	
 	# Submit commands, puts them in the command history and resets the history index to 0
 	# If a recalled command is submited command isn't pushed into history and index is set back 1	
 	if Input.is_action_just_pressed("ui_accept"):
 		var last_line = self.get_line(self.cursor_get_line() - 1)
-		var command = last_line.right(last_line.find(": ",0) + 2)
+		var command = last_line.right(last_line.find("$",0) + 2)
 		print(command)
 		if commands.find(command) == -1:
 			commands.push_front(command)
@@ -130,13 +140,13 @@ func run_command(command):
 	command = command.to_lower()
 	match command:
 		'?':
-			print_file("Help")
+			print_file("home/help.res")
 		
 		'h':
-			print_file("Help")
+			print_file("home/help.res")
 		
 		"help":
-			print_file("Help")
+			print_file("home/help.res")
 		
 		"clear":
 			self.text = "\n\n"
@@ -149,7 +159,7 @@ func run_command(command):
 			add_user_path()
 		
 		"ls":
-			print_file(cur_path)
+			print_file(cur_path + "/ls.res")
 			
 		
 		"exit":
