@@ -6,6 +6,7 @@ extends TextEdit
 var cur_line = 0
 var cur_column = 0
 var cur_path = "home"
+var file_wait = false
 var cur_min_column = 0
 var cur_max_row = 0
 var commands = []
@@ -21,7 +22,10 @@ func _ready():
 	self.add_keyword_color("clear", Color.aqua)
 	self.add_keyword_color("cd", Color.aqua)
 	self.add_keyword_color("cat", Color.aqua)
+	self.add_keyword_color("load", Color.aqua)
+	self.add_keyword_color("esc", Color.aqua)
 	self.add_keyword_color("exit", Color.red)
+	
 	cur_line = self.cursor_get_line()
 	init()
 	
@@ -51,12 +55,11 @@ func print_file(path):
 		if hang < 20:
 			wait_time = 0.2
 		yield(get_tree().create_timer(wait_time),"timeout")
-		
-		var line = file.get_line()
+		var line = file.get_line()		
 		self.text = self.text + "\n" + line
 		cur_line += 3
 		self.cursor_set_line(cur_line)
-	
+
 	file.close()
 	cur_line += 1
 	self.cursor_set_line(cur_line)
@@ -134,6 +137,7 @@ func _process(delta):
 
 # warning-ignore:unused_argument
 func _input(event):
+	
 	if Input.is_mouse_button_pressed(BUTTON_LEFT) or Input.is_mouse_button_pressed(BUTTON_RIGHT):
 		get_tree().set_input_as_handled()
 		self.cursor_set_line(cur_line)
@@ -142,6 +146,7 @@ func _input(event):
 	
 
 func run_command(command):
+	$CenterContainer/ImageLoader.visible = false
 	command = command.to_lower()
 	var command_parts = command.split(' ')
 	command = command_parts[0]
@@ -151,6 +156,9 @@ func run_command(command):
 		
 		'h':
 			print_file("home/help.res")
+		
+		'c':
+			file_wait = false
 		
 		"help":
 			print_file("home/help.res")
@@ -183,6 +191,7 @@ func run_command(command):
 			else:
 				self.insert_text_at_cursor("file does not exist!\n")
 				add_user_path()
+			file.close()
 		
 		"clear":
 			self.text = "\n\n"
@@ -196,7 +205,21 @@ func run_command(command):
 		
 		"ls":
 			print_file(cur_path + "/ls.res")
-			
+		
+		"load":
+			var file = File.new()
+			if cur_path == "home/pictures":
+				if file.file_exists("res://Images/Pixel/" + command_parts[1].replace('.png','.res')):
+					var texture = load("res://Images/Pixel/" + command_parts[1])
+					$CenterContainer/ImageLoader.set_texture(texture)
+					$CenterContainer/ImageLoader.visible = true
+				else:
+					self.insert_text_at_cursor("File doesn't exist\n")
+				add_user_path()
+			else:
+				add_user_path()
+				print(cur_path)
+			file.close()
 		
 		"exit":
 			get_tree().quit()

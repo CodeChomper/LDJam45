@@ -1,0 +1,163 @@
+[gd_scene load_steps=19 format=2]
+
+[ext_resource path="res://CodeChomper/Scripts/Player.gd" type="Script" id=1]
+[ext_resource path="res://CodeChomper/Images/Chomper1.png" type="Texture" id=2]
+[ext_resource path="res://CodeChomper/Images/Chomper2.png" type="Texture" id=3]
+[ext_resource path="res://CodeChomper/Images/Chomper3.png" type="Texture" id=4]
+[ext_resource path="res://CodeChomper/Images/Chomper4.png" type="Texture" id=5]
+[ext_resource path="res://CodeChomper/Images/Chomper5.png" type="Texture" id=6]
+[ext_resource path="res://CodeChomper/Images/Chomper6.png" type="Texture" id=7]
+[ext_resource path="res://CodeChomper/Images/ChomperEyeLids1.png" type="Texture" id=8]
+[ext_resource path="res://CodeChomper/Images/ChomperEyeLids2.png" type="Texture" id=9]
+[ext_resource path="res://CodeChomper/Images/ChomperEyeLids3.png" type="Texture" id=10]
+[ext_resource path="res://CodeChomper/Images/ChomperEyeLids4.png" type="Texture" id=11]
+[ext_resource path="res://CodeChomper/Images/ChomperEyeLids5.png" type="Texture" id=12]
+[ext_resource path="res://CodeChomper/Scripts/EyeLids.gd" type="Script" id=13]
+[ext_resource path="res://icon.png" type="Texture" id=14]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 2 ), ExtResource( 3 ), ExtResource( 4 ), ExtResource( 5 ) ],
+"loop": true,
+"name": "Walking",
+"speed": 10.0
+}, {
+"frames": [ ExtResource( 4 ) ],
+"loop": true,
+"name": "Jumping",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 6 ), ExtResource( 7 ) ],
+"loop": true,
+"name": "Standing",
+"speed": 5.0
+} ]
+
+[sub_resource type="SpriteFrames" id=4]
+animations = [ {
+"frames": [ ExtResource( 8 ), ExtResource( 9 ), ExtResource( 10 ), ExtResource( 11 ), ExtResource( 12 ), ExtResource( 11 ), ExtResource( 10 ), ExtResource( 9 ), ExtResource( 8 ) ],
+"loop": false,
+"name": "Blink",
+"speed": 10.0
+} ]
+
+[sub_resource type="CapsuleShape2D" id=2]
+radius = 14.3703
+height = 39.6403
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 31.8986, 31.8961 )
+
+[node name="Node2D" type="Node2D"]
+
+[node name="KinematicBody2D" type="KinematicBody2D" parent="."]
+position = Vector2( 103.536, 46.2689 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="ChomperSprite" type="AnimatedSprite" parent="KinematicBody2D"]
+scale = Vector2( 2, 2 )
+frames = SubResource( 1 )
+animation = "Walking"
+
+[node name="EyeLids" type="AnimatedSprite" parent="KinematicBody2D/ChomperSprite"]
+editor/display_folded = true
+frames = SubResource( 4 )
+animation = "Blink"
+frame = 3
+script = ExtResource( 13 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Timer" type="Timer" parent="KinematicBody2D/ChomperSprite/EyeLids"]
+autostart = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="KinematicBody2D"]
+shape = SubResource( 2 )
+
+[node name="Camera2D" type="Camera2D" parent="KinematicBody2D"]
+current = true
+smoothing_enabled = true
+drag_margin_left = 0.36
+drag_margin_top = 0.43
+drag_margin_right = 0.22
+drag_margin_bottom = 0.36
+editor_draw_limits = true
+editor_draw_drag_margin = true
+
+[node name="Level" type="Node" parent="."]
+editor/display_folded = true
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Level"]
+position = Vector2( 96, 320 )
+scale = Vector2( 0.5, 0.5 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sprite" type="Sprite" parent="Level/StaticBody2D"]
+modulate = Color( 0, 0, 0, 1 )
+texture = ExtResource( 14 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/StaticBody2D"]
+shape = SubResource( 3 )
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="Level"]
+position = Vector2( 128, 320 )
+scale = Vector2( 0.5, 0.5 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sprite" type="Sprite" parent="Level/StaticBody2D2"]
+modulate = Color( 0, 0, 0, 1 )
+texture = ExtResource( 14 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/StaticBody2D2"]
+shape = SubResource( 3 )
+
+[node name="StaticBody2D3" type="StaticBody2D" parent="Level"]
+position = Vector2( 160, 320 )
+scale = Vector2( 0.5, 0.5 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sprite" type="Sprite" parent="Level/StaticBody2D3"]
+modulate = Color( 0, 0, 0, 1 )
+texture = ExtResource( 14 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/StaticBody2D3"]
+shape = SubResource( 3 )
+
+[node name="StaticBody2D4" type="StaticBody2D" parent="Level"]
+position = Vector2( 192, 320 )
+scale = Vector2( 0.5, 0.5 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sprite" type="Sprite" parent="Level/StaticBody2D4"]
+modulate = Color( 0, 0, 0, 1 )
+texture = ExtResource( 14 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/StaticBody2D4"]
+shape = SubResource( 3 )
+
+[node name="StaticBody2D5" type="StaticBody2D" parent="Level"]
+position = Vector2( 224, 320 )
+scale = Vector2( 0.5, 0.5 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sprite" type="Sprite" parent="Level/StaticBody2D5"]
+modulate = Color( 0, 0, 0, 1 )
+texture = ExtResource( 14 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/StaticBody2D5"]
+shape = SubResource( 3 )
+[connection signal="timeout" from="KinematicBody2D/ChomperSprite/EyeLids/Timer" to="KinematicBody2D/ChomperSprite/EyeLids" method="_on_Timer_timeout"]

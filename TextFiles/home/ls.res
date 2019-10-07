@@ -1,4 +1,4 @@
 [desktop]   [documents] [downloads]
-[music]     [pictures]  [public]
+[music]     [pictures]  [games]
 
 

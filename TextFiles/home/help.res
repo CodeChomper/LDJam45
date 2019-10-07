@@ -3,5 +3,7 @@
 | cd [targetDir]			        to change to that directory         |
 | clear							    to remove all text from the console |
 | cat [targetFile]			        to read that file                   |
+| load [targetFile]                 to open that file                   |
+| esc                               to close file loaded                |
 +=======================================================================+
 

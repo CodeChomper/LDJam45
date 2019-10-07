@@ -1,3 +1,3 @@
-[..]        readme.txt
+[..]        [email]        readme.txt
 
 
