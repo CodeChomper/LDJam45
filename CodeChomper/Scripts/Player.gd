@@ -7,8 +7,10 @@ const JUMP_HEIGHT = -600
 const UP = Vector2(0,-1)
 var motion = Vector2()
 var anim
+var start_x = 0
 
 func _ready():
+	start_x = self.position.x
 	print("ready")
 	anim = get_node("ChomperSprite")
 	anim.play()	
@@ -36,6 +38,7 @@ func _physics_process(delta):
 	
 	if is_on_floor():
 		if Input.is_action_just_pressed("ui_up"):
+			$JumpSound.play()
 			motion.y = JUMP_HEIGHT
 	
 	# Handle animation state
@@ -50,7 +53,8 @@ func _physics_process(delta):
 	
 	#Handle falling off screen
 	if motion.y > 3000:
-		self.position.x = 64
+		$DeathSound.play()
+		self.position.x = start_x
 		self.position.y = -64
 		motion.y = 0
 	

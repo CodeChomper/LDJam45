@@ -34,6 +34,7 @@ func _ready():
 
 func init():
 	#print_file("BootMessages")
+	$ErrorBeep.play()
 	print_file("home/TempLoadText.res")
 	pass
 
@@ -42,6 +43,7 @@ func print_file(path):
 	self.cut()
 	var file = File.new()
 	if !file.file_exists("res://TextFiles/"+ path):
+		$ErrorBeep.play()
 		self.text = self.text + path + ": File missing!\n\n"
 		cur_line += 2
 		self.cursor_set_line(cur_line)
@@ -170,6 +172,7 @@ func run_command(command):
 					cur_path = cur_path.left(cur_path.find_last("/"))
 				else:
 					self.insert_text_at_cursor("Already at home, can't navigate back\n")
+					$ErrorBeep.play()
 				add_user_path()
 				return
 			print(command_parts[0])
@@ -178,6 +181,7 @@ func run_command(command):
 				cur_path += "/" + command_parts[1]
 			else:
 				self.insert_text_at_cursor("Folder doesn't exist!\n")
+				$ErrorBeep.play()
 			add_user_path()
 			file.close()
 			
@@ -190,6 +194,7 @@ func run_command(command):
 				print_file(cur_path + "/" + file_name)
 			else:
 				self.insert_text_at_cursor("file does not exist!\n")
+				$ErrorBeep.play()
 				add_user_path()
 			file.close()
 		
@@ -215,15 +220,18 @@ func run_command(command):
 					$CenterContainer/ImageLoader.visible = true
 				else:
 					self.insert_text_at_cursor("File doesn't exist\n")
+					$ErrorBeep.play()
 				add_user_path()
 			elif cur_path == "home/games":
 				if command_parts[1] == "chomper.py":
 					Global.goto_scene("res://Scenes/CodeChomper.tscn")
 				else:
 					self.insert_text_at_cursor("File doesn't exist!\n")
+					$ErrorBeep.play()
 					add_user_path()
 			else:
 				self.insert_text_at_cursor("File doesn't exist!\n")
+				$ErrorBeep.play()
 				add_user_path()
 				
 			file.close()

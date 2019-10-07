@@ -1,15 +1,16 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Fonts/VCR.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://Scripts/Console.gd" type="Script" id=2]
 [ext_resource path="res://Images/Pixel/brewhaha.png" type="Texture" id=3]
 [ext_resource path="res://Scripts/ImageLoader.gd" type="Script" id=4]
+[ext_resource path="res://Sounds/error.wav" type="AudioStream" id=5]
+
+[sub_resource type="StyleBoxEmpty" id=1]
 
 [sub_resource type="StyleBoxEmpty" id=2]
 
-[sub_resource type="StyleBoxEmpty" id=3]
-
-[sub_resource type="DynamicFont" id=4]
+[sub_resource type="DynamicFont" id=3]
 size = 20
 font_data = ExtResource( 1 )
 
@@ -27,9 +28,9 @@ margin_top = 10.0
 margin_right = 1014.0
 margin_bottom = 575.0
 mouse_filter = 1
-custom_styles/focus = SubResource( 2 )
-custom_styles/normal = SubResource( 3 )
-custom_fonts/font = SubResource( 4 )
+custom_styles/focus = SubResource( 1 )
+custom_styles/normal = SubResource( 2 )
+custom_fonts/font = SubResource( 3 )
 custom_constants/line_spacing = 7
 highlight_current_line = true
 syntax_highlighting = true
@@ -49,3 +50,6 @@ position = Vector2( 519.274, 284.891 )
 scale = Vector2( 3, 3 )
 texture = ExtResource( 3 )
 script = ExtResource( 4 )
+
+[node name="ErrorBeep" type="AudioStreamPlayer2D" parent="TextEdit"]
+stream = ExtResource( 5 )

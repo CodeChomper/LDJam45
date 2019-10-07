@@ -4,4 +4,9 @@ You see I was a game dev like you once. I love cramming hours of development int
 
 Anyway feel free to dig around my computer, since you have already started you might as well continue.
 
+Oh yea I almost forgot, I added a function to this system that the help document doesn't know about. I should update the docs but you can now type load [targetFile.extension] to load different file types. 
+Example: 
+load funny.gif 
+would open a funny meme if it existed within the current directory.
+
 

@@ -15,4 +15,5 @@ func _ready():
 
 func _on_Area2D_area_entered(area):
 	print("game over")
+	$EndSound.play()
 	pass # Replace with function body.
