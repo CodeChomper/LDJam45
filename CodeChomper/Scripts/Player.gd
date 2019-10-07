@@ -2,8 +2,8 @@ extends KinematicBody2D
 
 # https://youtu.be/BfQGXtlmE7k?t=324
 const GRAVITY = 20
-const SPEED = 200
-const JUMP_HEIGHT = -500
+const SPEED = 300
+const JUMP_HEIGHT = -600
 const UP = Vector2(0,-1)
 var motion = Vector2()
 var anim
@@ -12,6 +12,13 @@ func _ready():
 	print("ready")
 	anim = get_node("ChomperSprite")
 	anim.play()	
+
+func _input(event):
+	if Input.is_action_just_pressed("ui_cancel"):
+		print("going back to console")
+		Global.goto_scene("res://Scenes/Console.tscn")
+
+
 
 func _physics_process(delta):
 	motion.y += GRAVITY
@@ -50,3 +57,7 @@ func _physics_process(delta):
 	
 	motion = move_and_slide(motion, UP)
 	pass
+
+func _on_Area2D_area_entered(area):
+	yield(get_tree().create_timer(0.4),"timeout")
+	queue_free()

@@ -216,9 +216,16 @@ func run_command(command):
 				else:
 					self.insert_text_at_cursor("File doesn't exist\n")
 				add_user_path()
+			elif cur_path == "home/games":
+				if command_parts[1] == "chomper.py":
+					Global.goto_scene("res://Scenes/CodeChomper.tscn")
+				else:
+					self.insert_text_at_cursor("File doesn't exist!\n")
+					add_user_path()
 			else:
+				self.insert_text_at_cursor("File doesn't exist!\n")
 				add_user_path()
-				print(cur_path)
+				
 			file.close()
 		
 		"exit":
